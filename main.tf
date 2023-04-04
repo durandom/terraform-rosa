@@ -48,7 +48,7 @@ data "aws_caller_identity" "current" {
 }
 
 resource "ocm_cluster_rosa_classic" "rosa_sts_cluster" {
-  name           = "poc-infra"
+  name           = var.cluster_name
   cloud_region   = "us-east-2"
   aws_account_id     = data.aws_caller_identity.current.account_id
   availability_zones = ["us-east-2a"]

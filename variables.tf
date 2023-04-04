@@ -15,3 +15,7 @@ variable url {
 variable account_role_prefix {
     type = string
 }
+
+variable cluster_name {
+    type = string
+}
