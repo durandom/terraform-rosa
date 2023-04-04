@@ -1,0 +1,5 @@
+.env
+manifests/aws-credentials.env
+manifests/terraform.env
+.terraform
+.terraform.lock.hcl

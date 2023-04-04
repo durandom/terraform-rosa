@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: terraform-rosa-sts
+spec:
+  tasks:
+    - name: git-clone
+      params:
+        - name: url
+          value: "https://github.com/durandom/terraform-rosa"
+        - name: revision
+          value: main
+        - name: submodules
+          value: "true"
+        - name: depth
+          value: "1"
+        - name: sslVerify
+          value: "true"
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: deleteExisting
+          value: "true"
+        - name: verbose
+          value: "true"
+        - name: gitInitImage
+          value: >-
+            gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2
+        - name: userHome
+          value: /home/git
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: source
+    - name: terraform
+      runAfter:
+        - git-clone
+      taskRef:
+        name: terraform-cli
+      workspaces:
+        - name: source
+          workspace: source
+      params:
+        - name: terraform-secret
+          value: "terraform-mt77kd4g6g"
+        - name: image
+          value: "hashicorp/terraform:1.4"
+        - name: ARGS
+          value:
+            - apply
+            # - "-auto-approve"
+  workspaces:
+    - name: source
